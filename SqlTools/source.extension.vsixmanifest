@@ -6,6 +6,7 @@
         <Description xml:space="preserve">SQL syntax highlighting (keywords, operators, functions and variables) to string literals</Description>
         <Icon>Resources\Icon.png</Icon>
         <PreviewImage>Resources\Preview.png</PreviewImage>
+        <Tags>SQL, syntax highlighting, string literals</Tags>
     </Metadata>
     <Installation>
         <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0,17.0)" />

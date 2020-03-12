@@ -16,7 +16,7 @@ namespace SqlTools.Completions
         IDictionary<ITextView, IAsyncCompletionSource> cache = new Dictionary<ITextView, IAsyncCompletionSource>();
 
         [Import]
-        private KeywordCatalog Catalog;
+        private SqlCatalog Catalog;
 
         [Import]
         private ITextStructureNavigatorSelectorService StructureNavigatorSelector;

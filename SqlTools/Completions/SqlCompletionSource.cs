@@ -14,7 +14,7 @@ namespace SqlTools.Completions
 {
     public class SqlCompletionSource : IAsyncCompletionSource
     {
-        private KeywordCatalog Catalog { get; }
+        private SqlCatalog Catalog { get; }
         private ITextStructureNavigatorSelectorService StructureNavigatorSelector { get; }
         //https://github.com/microsoft/VSSDK-Extensibility-Samples
         //http://glyphlist.azurewebsites.net/knownmonikers/
@@ -42,7 +42,7 @@ namespace SqlTools.Completions
         static ImmutableArray<CompletionFilter> VariableFilters = ImmutableArray.Create(VariableFilter);
         static ImmutableArray<CompletionFilter> UnknownFilters = ImmutableArray.Create(UnknownFilter);
 
-        public SqlCompletionSource(KeywordCatalog catalog, ITextStructureNavigatorSelectorService structureNavigatorSelector)
+        public SqlCompletionSource(SqlCatalog catalog, ITextStructureNavigatorSelectorService structureNavigatorSelector)
         {
             Catalog = catalog;
             StructureNavigatorSelector = structureNavigatorSelector;
@@ -195,26 +195,26 @@ namespace SqlTools.Completions
         /// <summary>
         /// Builds a <see cref="CompletionItem"/> based on <see cref="ElementCatalog.Element"/>
         /// </summary>
-        private CompletionItem MakeItemFromElement(KeywordCatalog.Keyword keyword)
+        private CompletionItem MakeItemFromElement(SqlCatalog.Keyword keyword)
         {
             ImageElement icon = null;
             ImmutableArray<CompletionFilter> filters;
 
             switch (keyword.Category)
             {
-                case KeywordCatalog.Category.Keyword:
+                case SqlCatalog.Category.Keyword:
                     icon = KeywordIcon;
                     filters = KeywordFilters;
                     break;
-                case KeywordCatalog.Category.Operator:
+                case SqlCatalog.Category.Operator:
                     icon = OperatorIcon;
                     filters = OperatorFilters;
                     break;
-                case KeywordCatalog.Category.Function:
+                case SqlCatalog.Category.Function:
                     icon = FunctionIcon;
                     filters = FunctionFilters;
                     break;
-                case KeywordCatalog.Category.Variable:
+                case SqlCatalog.Category.Variable:
                     icon = VariableIcon;
                     filters = VariableFilters;
                     break;
@@ -232,7 +232,7 @@ namespace SqlTools.Completions
 
             // Each completion item we build has a reference to the element in the property bag.
             // We use this information when we construct the tooltip.
-            item.Properties.AddProperty(nameof(KeywordCatalog.Keyword), keyword);
+            item.Properties.AddProperty(nameof(SqlCatalog.Keyword), keyword);
 
             return item;
         }
@@ -242,21 +242,21 @@ namespace SqlTools.Completions
         /// </summary>
         public Task<object> GetDescriptionAsync(IAsyncCompletionSession session, CompletionItem item, CancellationToken token)
         {
-            if (item.Properties.TryGetProperty<KeywordCatalog.Keyword>(nameof(KeywordCatalog.Keyword), out var matchingElement))
+            if (item.Properties.TryGetProperty<SqlCatalog.Keyword>(nameof(SqlCatalog.Keyword), out var matchingElement))
             {
                 return Task.FromResult<object>($"{matchingElement.Name} is {GetCategoryName(matchingElement.Category)}");
             }
             return Task.FromResult<object>(null);
         }
 
-        private string GetCategoryName(KeywordCatalog.Category category)
+        private string GetCategoryName(SqlCatalog.Category category)
         {
             switch (category)
             {
-                case KeywordCatalog.Category.Keyword: return "a keyword";
-                case KeywordCatalog.Category.Function: return "a function";
-                case KeywordCatalog.Category.Operator: return "a operator";
-                case KeywordCatalog.Category.Variable: return "a variable";
+                case SqlCatalog.Category.Keyword: return "a keyword";
+                case SqlCatalog.Category.Function: return "a function";
+                case SqlCatalog.Category.Operator: return "a operator";
+                case SqlCatalog.Category.Variable: return "a variable";
                 default: return "an uncategorized keyword";
             }
         }

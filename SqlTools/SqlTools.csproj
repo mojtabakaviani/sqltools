@@ -78,7 +78,7 @@
     <Compile Include="Classifiers\SqlClassifierClassificationDefinition.cs" />
     <Compile Include="Classifiers\SqlClassifierFormat.cs" />
     <Compile Include="Classifiers\SqlClassifierProvider.cs" />
-    <Compile Include="Completions\KeywordCatalog.cs" />
+    <Compile Include="Completions\SqlCatalog.cs" />
     <Compile Include="Completions\SqlCompletionSource.cs" />
     <Compile Include="Completions\SqlCompletionSourceProvider.cs" />
     <Compile Include="NaturalTextTaggers\CommentTextTagger.cs" />

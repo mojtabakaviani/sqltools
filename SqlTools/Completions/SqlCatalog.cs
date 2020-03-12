@@ -4,7 +4,7 @@ using System.ComponentModel.Composition;
 namespace SqlTools.Completions
 {
     [Export]
-    public class KeywordCatalog
+    public class SqlCatalog
     {
         public List<Keyword> Keywords { get; } = new List<Keyword>
         {

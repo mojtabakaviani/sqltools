@@ -25,14 +25,15 @@ namespace SqlTools.Classifiers
 
         private readonly List<string> keywords = new List<string> {
             "select", "insert", "delete", "update",
-            "into", "values", "truncate", "distinct", "top", "with","from",
+            "into", "values", "truncate", "distinct", "with", "from",
             "union", "except","where",
             "order by", "asc", "desc", "over", "group by",
             "on", "as",
             "create", "alter", "drop",
             "table", "function", "procedure", "view", "schema",
             "declare", "set",
-            "if", "begin", "then", "else", "end", "for", "while",
+            "if", "begin", "else", "end", "for", "while",
+            "case", "when", "then",
             "transaction", "commit", "rollback",
             "exec", "execute", "return", "returns", "print", "use",
             "dbcc", "fetch", "open", "deallocate", "inserted", "deleted",
@@ -56,7 +57,7 @@ namespace SqlTools.Classifiers
 
 
         private readonly List<string> functions = new List<string> {
-            "count", "count_big", "sum", "min", "max", "avg", "row_number",
+            "top", "count", "count_big", "sum", "min", "max", "avg", "row_number",
             "abs", "degrees", "rand", "acos", "exp", "round", "asin", "floor", "sign", "atan", "log", "sin", "atan2", "log10", "sqrt", "ceiling", "pi", "square", "cos", "power", "tan", "cot", "radians",
             "newid", "isnull", "coalesce", "choose", "iif",
             "left", "right", "substring", "trim", "ltrim", "rtrim", "upper", "lower", "charindex", "len", "stuff", "format", "unicode",

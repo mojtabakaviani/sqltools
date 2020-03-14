@@ -8,7 +8,7 @@ using SqlTools.NaturalTextTaggers;
 namespace SqlTools.Classifiers
 {
     [Export(typeof(IClassifierProvider))]
-    [ContentType("code")]
+    [ContentType("csharp")]
     internal class SqlClassifierProvider : IClassifierProvider
     {
 #pragma warning disable 649

@@ -20,27 +20,33 @@ namespace SqlTools.Completions
         //http://glyphlist.azurewebsites.net/knownmonikers/
         //https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.imaging.knownimageids.operator?view=visualstudiosdk-2019
         // ImageElements may be shared by CompletionFilters and CompletionItems. The automationName parameter should be localized.
-        static ImageElement KeywordIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1589), "Keyword");
-        static ImageElement FunctionIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1919), "Function");
-        static ImageElement OperatorIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 2174), "Operator");
-        static ImageElement VariableIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1747), "Variable");
-        static ImageElement UnknownIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 2025), "Unknown");
+        private static ImageElement KeywordIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1589), "Keyword");
+        private static ImageElement FunctionIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1913), "Function");
+        private static ImageElement OperatorIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 2174), "Operator");
+        private static ImageElement VariableIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1747), "Variable");
+        private static ImageElement DataTypeIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 616), "DataType");
+        private static ImageElement TableIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 3032), "Table");
+        private static ImageElement UnknownIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 2025), "Unknown");
 
         // CompletionFilters are rendered in the UI as buttons
         // The displayText should be localized. Alt + Access Key toggles the filter button.
-        static CompletionFilter KeywordFilter = new CompletionFilter("Keyword", "K", KeywordIcon);
-        static CompletionFilter FunctionFilter = new CompletionFilter("Function", "F", FunctionIcon);
-        static CompletionFilter OperatorFilter = new CompletionFilter("Operator", "O", OperatorIcon);
-        static CompletionFilter VariableFilter = new CompletionFilter("Variable", "V", VariableIcon);
-        static CompletionFilter UnknownFilter = new CompletionFilter("Unknown", "U", UnknownIcon);
+        private static CompletionFilter KeywordFilter = new CompletionFilter("Keyword", "K", KeywordIcon);
+        private static CompletionFilter FunctionFilter = new CompletionFilter("Function", "F", FunctionIcon);
+        private static CompletionFilter OperatorFilter = new CompletionFilter("Operator", "O", OperatorIcon);
+        private static CompletionFilter VariableFilter = new CompletionFilter("Variable", "V", VariableIcon);
+        private static CompletionFilter DataTypeFilter = new CompletionFilter("DataType", "D", DataTypeIcon);
+        private static CompletionFilter UnknownFilter = new CompletionFilter("Unknown", "U", UnknownIcon);
 
         // CompletionItem takes array of CompletionFilters.
         // In this example, items assigned "MetalloidFilters" are visible in the list if user selects either MetalFilter or NonMetalFilter.
-        static ImmutableArray<CompletionFilter> KeywordFilters = ImmutableArray.Create(KeywordFilter);
-        static ImmutableArray<CompletionFilter> FunctionFilters = ImmutableArray.Create(FunctionFilter);
-        static ImmutableArray<CompletionFilter> OperatorFilters = ImmutableArray.Create(OperatorFilter);
-        static ImmutableArray<CompletionFilter> VariableFilters = ImmutableArray.Create(VariableFilter);
-        static ImmutableArray<CompletionFilter> UnknownFilters = ImmutableArray.Create(UnknownFilter);
+        private static ImmutableArray<CompletionFilter> KeywordFilters = ImmutableArray.Create(KeywordFilter);
+        private static ImmutableArray<CompletionFilter> FunctionFilters = ImmutableArray.Create(FunctionFilter);
+        private static ImmutableArray<CompletionFilter> OperatorFilters = ImmutableArray.Create(OperatorFilter);
+        private static ImmutableArray<CompletionFilter> VariableFilters = ImmutableArray.Create(VariableFilter);
+        private static ImmutableArray<CompletionFilter> DataTypeFilters = ImmutableArray.Create(DataTypeFilter);
+        private static ImmutableArray<CompletionFilter> UnknownFilters = ImmutableArray.Create(UnknownFilter);
+
+        private static ImmutableArray<string> detects = ImmutableArray.Create(new string[] { "select", "insert", "delete", "update", "create", "alter", "drop", "exec", "execute", "from", "join", "where", "group", " order" });
 
         public SqlCompletionSource(SqlCatalog catalog, ITextStructureNavigatorSelectorService structureNavigatorSelector)
         {
@@ -54,8 +60,9 @@ namespace SqlTools.Completions
             if (char.IsNumber(trigger.Character)         // a number
                 || char.IsPunctuation(trigger.Character) // punctuation
                 || trigger.Character == '\n'             // new line
-                || trigger.Reason == CompletionTriggerReason.Backspace
-                || trigger.Reason == CompletionTriggerReason.Deletion)
+                                                         //|| trigger.Reason == CompletionTriggerReason.Backspace
+                                                         //|| trigger.Reason == CompletionTriggerReason.Deletion
+                )
             {
                 return CompletionStartData.DoesNotParticipateInCompletion;
             }
@@ -130,8 +137,12 @@ namespace SqlTools.Completions
         {
             // See whether we are in the key or value portion of the pair
             var lineStart = triggerLocation.GetContainingLine().Start;
+            var lineEnd = triggerLocation.GetContainingLine().End;
             var spanBeforeCaret = new SnapshotSpan(lineStart, triggerLocation);
             var textBeforeCaret = triggerLocation.Snapshot.GetText(spanBeforeCaret);
+
+            var spanCurrentCaret = new SnapshotSpan(lineStart, lineEnd);
+            var textCurrentCaret = triggerLocation.Snapshot.GetText(spanCurrentCaret).ToLower();
             //var colonIndex = textBeforeCaret.IndexOf(':');
             //var colonExistsBeforeCaret = colonIndex != -1;
 
@@ -143,19 +154,30 @@ namespace SqlTools.Completions
             //var KeyExtractingRegex = new Regex(@"^""[\W*|\s*](\w+)[\W*|\s*]$");
             //var key = KeyExtractingRegex.Match(textBeforeCaret);
             //var candidateName = key.Success ? key.Groups.Count > 0 && key.Groups[1].Success ? key.Groups[1].Value : string.Empty : string.Empty;
-            if (textBeforeCaret.Length > 0)
+
+            //var literals = Regex.Match(triggerLocation.Snapshot.GetText(), @"""(.*?)""", RegexOptions.Singleline);
+
+            int index = -1;
+            bool detected = false;
+            foreach (var detect in detects)
             {
-                int lastindex = -1;
+                while (textCurrentCaret.Length > index + 1 && (index = textCurrentCaret.IndexOf(detect, index + 1)) > -1)
+                    detected = true;
+            }
+
+            if (textBeforeCaret.Length > 0 && detected)
+            {
+                index = -1;
                 for (int i = textBeforeCaret.Length - 1; i > 0; i--)
                 {
                     if (textBeforeCaret[i] == ' ' || textBeforeCaret[i] == '(' || textBeforeCaret[i] == '.' || textBeforeCaret[i] == '"')
                     {
-                        lastindex = i;
+                        index = i;
                         break;
                     }
                 }
-                if (lastindex != -1)
-                    return Task.FromResult(GetContextForValue(textBeforeCaret.Substring(lastindex + 1)));
+                if (index != -1)
+                    return Task.FromResult(GetContextForValue(textBeforeCaret.Substring(index + 1)));
             }
             return Task.FromResult(GetContextForValue(""));
         }
@@ -178,9 +200,9 @@ namespace SqlTools.Completions
                 }
             }
             // We would like to allow user to type anything, so we create SuggestionItemOptions
-            //var suggestionOptions = new SuggestionItemOptions("Enter any characters", $"Please enter value for {key}");
+            var suggestionOptions = new SuggestionItemOptions("Type anything...", $"Please enter value for {key}");
 
-            return new CompletionContext(itemsBasedOnKey);
+            return new CompletionContext(itemsBasedOnKey, suggestionOptions);
         }
 
         /// <summary>
@@ -218,14 +240,18 @@ namespace SqlTools.Completions
                     icon = VariableIcon;
                     filters = VariableFilters;
                     break;
+                case SqlCatalog.Category.DataType:
+                    icon = DataTypeIcon;
+                    filters = DataTypeFilters;
+                    break;
             }
             var item = new CompletionItem(
-                displayText: keyword.Name,
+                displayText: keyword.Name.ToUpper(),
                 source: this,
                 icon: icon,
                 filters: filters,
                 suffix: keyword.Category.ToString(), //keyword.Symbol
-                insertText: keyword.Name,
+                insertText: keyword.Name.ToUpper(),
                 sortText: $"keyword {keyword.Category.ToString()}",
                 filterText: $"{keyword.Name} {keyword.Category.ToString()}",
                 attributeIcons: ImmutableArray<ImageElement>.Empty);
@@ -257,7 +283,8 @@ namespace SqlTools.Completions
                 case SqlCatalog.Category.Function: return "a function";
                 case SqlCatalog.Category.Operator: return "a operator";
                 case SqlCatalog.Category.Variable: return "a variable";
-                default: return "an uncategorized keyword";
+                case SqlCatalog.Category.DataType: return "a datatype";
+                default: return "an uncategorized";
             }
         }
 

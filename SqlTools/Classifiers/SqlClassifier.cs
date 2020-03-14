@@ -14,40 +14,41 @@ namespace SqlTools.Classifiers
         //https://github.com/EWSoftware/VSSpellChecker/
         //https://github.com/fbdegroot/SqlSyntaxHighlighting
         private readonly char[] keywordPrefixCharacters = new[] { '\t', ' ', '"', '(' };
-        private readonly char[] keywordPostfixCharacters = new[] { '\t', ' ', '"', ')' };
+        private readonly char[] keywordPostfixCharacters = new[] { '\t', ' ', '"', ')', '(', ',' };
         private readonly char[] functionPrefixCharacters = new[] { '\t', ' ', '"', ',', '(' };
         private readonly char[] functionPostfixCharacters = new[] { '\t', '(' };
 
         private readonly List<string> detects = new List<string>
         {
-            "select", "insert", "delete", "update", "create", "alter", "drop", "exec", "execute"
+            "select", "insert", "delete", "update", "create", "alter", "drop", "exec", "execute", "from", "join", "where"
         };
 
         private readonly List<string> keywords = new List<string> {
             "select", "insert", "delete", "update",
             "into", "values", "truncate", "distinct", "with", "from",
-            "union", "except","where",
-            "order by", "asc", "desc", "over", "group by",
-            "on", "as",
-            "create", "alter", "drop",
-            "table", "function", "procedure", "view", "schema",
-            "declare", "set",
-            "if", "begin", "else", "end", "for", "while",
-            "case", "when", "then",
-            "transaction", "commit", "rollback",
-            "exec", "execute", "return", "returns", "print", "use",
-            "dbcc", "fetch", "open", "deallocate", "inserted", "deleted",
+            "union", "except", "intersect", "where", "of", "off", "rule",
+            "group by", "order by", "asc", "desc", "over", "offsets", "limit",
+            "on", "as", "go", "database", "allocate", "deallocate", "dump", "tsequal",
+            "create", "alter", "drop", "add", "column", "constraint", "cascade", "identity", "check", "nocheck", "unique",
+            "table", "function", "procedure", "index", "view", "schema", "trigger", "close", "percent", "plan",
+            "declare", "set", "full", "coalesce", "collate", "varying", "nonclustered", "statistics", "national",
+            "if", "begin", "else", "end", "for", "while", "goto", "break", "revert", "revoke", "browse",
+            "case", "when", "then", "restrict", "kill", "load", "merge", "current",
+            "transaction", "commit", "rollback", "external", "external", "raiserror", "file", "fillfactor", "read", "foreign",
+            "reconfigure", "freetext", "authorization", "replication", "backup", "restore", "distributed",
+            "exec", "execute", "return", "returns", "print", "use", "exit", "openxml", "openrowset", "openquery",
+            "dbcc", "fetch", "open", "next", "inserted", "deleted", "print",
             "bigint", "numeric", "bit", "smallint", "decimal", "smallmoney", "int", "tinyint", "money", "float", "real",
             "date", "datetimeoffset", "datetime2", "smalldatetime", "datetime", "time", "timestamp",
-            "char", "varchar", "text", "nchar", "nvarchar", "ntext",
+            "char", "varchar", "text", "nchar", "nvarchar", "ntext", "grant", "deny",
             "binary", "varbinary", "image",
             "cursor", "hierarchyid", "uniqueidentifier", "sql_variant", "xml",
             "pivot", "unpivot"
         };
 
-        private readonly List<string> operators = new List<string>
+        private readonly char[] operators = new char[]
         {
-            "*", ",", ".", "(", ")", "=", ">", "<", "+", "-", "/", "%", "~", "&", "^", "|", "'", ":"
+            '*', ',', '.', ';', '(', ')', '[', ']', '=', '>', '<', '+', '-', '/', '%', '~', '&', '^', '|', '\'', ':'
         };
 
         private readonly List<string> logicals = new List<string>
@@ -175,11 +176,11 @@ namespace SqlTools.Classifiers
                     classifiedSpans.Add(new ClassificationSpan(new SnapshotSpan(snapshot.Start + match.Groups["Variable"].Index, match.Groups["Variable"].Length), definedType));
 
                 // operators
-                foreach (string op in operators)
+                foreach (char op in operators)
                 {
                     while (snapshot.Length > index + 1 && (index = text.IndexOf(op, index + 1)) > -1)
                     {
-                        classifiedSpans.Add(new ClassificationSpan(new SnapshotSpan(snapshot.Start + index, op.Length), operatorType));
+                        classifiedSpans.Add(new ClassificationSpan(new SnapshotSpan(snapshot.Start + index, 1), operatorType));
                     }
                 }
             }

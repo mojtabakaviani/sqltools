@@ -1,5 +1,4 @@
-﻿
-using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
+﻿using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
@@ -10,7 +9,7 @@ namespace SqlTools.Completions
 {
     [Export(typeof(IAsyncCompletionSourceProvider))]
     [Name("sql keywords dictionary completion provider")]
-    [ContentType("code")]
+    [ContentType("csharp")]
     public class SqlCompletionSourceProvider : IAsyncCompletionSourceProvider
     {
         IDictionary<ITextView, IAsyncCompletionSource> cache = new Dictionary<ITextView, IAsyncCompletionSource>();

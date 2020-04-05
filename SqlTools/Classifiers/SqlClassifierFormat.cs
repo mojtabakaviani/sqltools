@@ -6,85 +6,85 @@ using Microsoft.VisualStudio.Utilities;
 namespace SqlTools.Classifiers
 {
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "sql-keyword")]
-    [Name("sql-keyword")]
+    [ClassificationType(ClassificationTypeNames = "Sql-Keyword")]
+    [Name("Sql-Keyword")]
     [UserVisible(true)]
     [Order(Before = Priority.High, After = Priority.High)]
     internal sealed class SqlKeyworkFormat : ClassificationFormatDefinition
     {
         public SqlKeyworkFormat()
         {
-            this.DisplayName = "sql-keyword";
+            this.DisplayName = "Sql-Keyword";
             this.ForegroundColor = Colors.Blue;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "sql-operator")]
-    [Name("sql-operator")]
+    [ClassificationType(ClassificationTypeNames = "Sql-Operator")]
+    [Name("Sql-Operator")]
     [UserVisible(true)]
     [Order(Before = Priority.High, After = Priority.High)]
     internal sealed class SqlOperatorFormat : ClassificationFormatDefinition
     {
         public SqlOperatorFormat()
         {
-            this.DisplayName = "sql-operator";
+            this.DisplayName = "Sql-Operator";
             this.ForegroundColor = Colors.Gray;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "sql-function")]
-    [Name("sql-function")]
+    [ClassificationType(ClassificationTypeNames = "Sql-Function")]
+    [Name("Sql-Function")]
     [UserVisible(true)]
     [Order(Before = Priority.High, After = Priority.High)]
     internal sealed class SqlDunctionFormat : ClassificationFormatDefinition
     {
         public SqlDunctionFormat()
         {
-            this.DisplayName = "sql-function";
+            this.DisplayName = "Sql-Function";
             this.ForegroundColor = Colors.Magenta;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "sql-variable")]
-    [Name("sql-variable")]
+    [ClassificationType(ClassificationTypeNames = "Sql-Variable")]
+    [Name("Sql-Variable")]
     [UserVisible(true)]
     [Order(Before = Priority.High, After = Priority.High)]
     internal sealed class SqlVariableFormat : ClassificationFormatDefinition
     {
         public SqlVariableFormat()
         {
-            this.DisplayName = "sql-variable";
+            this.DisplayName = "Sql-Variable";
             this.ForegroundColor = Colors.Green;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "sql-literal")]
-    [Name("sql-literal")]
+    [ClassificationType(ClassificationTypeNames = "Sql-Literal")]
+    [Name("Sql-Literal")]
     [UserVisible(true)]
     [Order(Before = Priority.High, After = Priority.High)]
     internal sealed class SqlLiteralFormat : ClassificationFormatDefinition
     {
         public SqlLiteralFormat()
         {
-            this.DisplayName = "sql-literal";
+            this.DisplayName = "Sql-Literal";
             this.ForegroundColor = Colors.Black;
         }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [ClassificationType(ClassificationTypeNames = "sql-defined")]
-    [Name("sql-defined")]
+    [ClassificationType(ClassificationTypeNames = "Sql-Defined")]
+    [Name("Sql-Defined")]
     [UserVisible(true)]
     [Order(Before = Priority.High, After = Priority.High)]
     internal sealed class SqlDefineFormat : ClassificationFormatDefinition
     {
         public SqlDefineFormat()
         {
-            this.DisplayName = "sql-defined";
+            this.DisplayName = "Sql-Defined";
             this.ForegroundColor = new Color() { R = 116, G = 83, B = 31 };
         }
     }

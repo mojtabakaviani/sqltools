@@ -8,28 +8,28 @@ namespace SqlTools.Classifiers
     {
 #pragma warning disable 169
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("sql-keyword")]
-        private static ClassificationTypeDefinition keywordDefinition;
+        [Name("Sql-Keyword")]
+        internal static ClassificationTypeDefinition KeywordDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("sql-operator")]
-        private static ClassificationTypeDefinition operatorDefinition;
+        [Name("Sql-Operator")]
+        internal static ClassificationTypeDefinition OperatorDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("sql-function")]
-        internal static ClassificationTypeDefinition functionDefinition;
+        [Name("Sql-Function")]
+        internal static ClassificationTypeDefinition FunctionDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("sql-variable")]
-        internal static ClassificationTypeDefinition variableDefinition;
+        [Name("Sql-Variable")]
+        internal static ClassificationTypeDefinition VariableDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("sql-literal")]
-        internal static ClassificationTypeDefinition literalDefinition;
+        [Name("Sql-Literal")]
+        internal static ClassificationTypeDefinition LiteralDefinition;
 
         [Export(typeof(ClassificationTypeDefinition))]
-        [Name("sql-defined")]
-        internal static ClassificationTypeDefinition definedDefinition;
+        [Name("Sql-Defined")]
+        internal static ClassificationTypeDefinition DefinedDefinition;
 #pragma warning restore 169
     }
 }

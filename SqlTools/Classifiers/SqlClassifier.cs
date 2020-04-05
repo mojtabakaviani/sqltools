@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Windows.Media;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.Formatting;
 using Microsoft.VisualStudio.Text.Tagging;
 using SqlTools.NaturalTextTaggers;
 
 namespace SqlTools.Classifiers
 {
-    internal class SqlClassifier : IClassifier
+    internal class SqlClassifier : IClassifier, IDisposable
     {
         //https://github.com/EWSoftware/VSSpellChecker/
         //https://github.com/fbdegroot/SqlSyntaxHighlighting
@@ -81,16 +84,54 @@ namespace SqlTools.Classifiers
         private readonly IClassificationType literalType;
         private readonly IClassificationType definedType;
         readonly ITagAggregator<NaturalTextTag> tagger;
+        readonly IClassificationFormatMapService service;
 
-        internal SqlClassifier(ITagAggregator<NaturalTextTag> tagger, IClassificationTypeRegistryService registry)
+        internal SqlClassifier(ITagAggregator<NaturalTextTag> tagger, IClassificationTypeRegistryService registry, IClassificationFormatMapService format)
         {
             this.tagger = tagger;
-            keywordType = registry.GetClassificationType("sql-keyword");
-            operatorType = registry.GetClassificationType("sql-operator");
-            functionType = registry.GetClassificationType("sql-function");
-            variableType = registry.GetClassificationType("sql-variable");
-            literalType = registry.GetClassificationType("sql-literal");
-            definedType = registry.GetClassificationType("sql-defined");
+            this.service = format;
+            keywordType = registry.GetClassificationType("Sql-Keyword");
+            operatorType = registry.GetClassificationType("Sql-Operator");
+            functionType = registry.GetClassificationType("Sql-Function");
+            variableType = registry.GetClassificationType("Sql-Variable");
+            literalType = registry.GetClassificationType("Sql-Literal");
+            definedType = registry.GetClassificationType("Sql-Defined");
+
+            VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
+
+            UpdateThemeColors();
+        }
+
+        private void VSColorTheme_ThemeChanged(ThemeChangedEventArgs e)
+        {
+            UpdateThemeColors();
+        }
+
+        private void UpdateThemeColors()
+        {
+            var themecolor = VSColorTheme.GetThemedColor(EnvironmentColors.ToolWindowBackgroundColorKey);
+            var formatMap = service.GetClassificationFormatMap(category: "text");
+            try
+            {
+
+                formatMap.BeginBatchUpdate();
+                var oldProp = formatMap.GetTextProperties(keywordType);
+                var newProp = TextFormattingRunProperties.CreateTextFormattingRunProperties(
+                           themecolor == System.Drawing.Color.FromArgb(37, 37, 38) ? new SolidColorBrush(Color.FromRgb(86, 156, 214)) : new SolidColorBrush(Colors.Blue),
+                           oldProp.BackgroundBrush,
+                           oldProp.Typeface,
+                           null,
+                           null,
+                           oldProp.TextDecorations,
+                           oldProp.TextEffects,
+                           oldProp.CultureInfo);
+                formatMap.SetTextProperties(keywordType, newProp);
+
+            }
+            finally
+            {
+                formatMap.EndBatchUpdate();
+            }
         }
 
 #pragma warning disable 67
@@ -186,6 +227,11 @@ namespace SqlTools.Classifiers
             }
 
             return classifiedSpans;
+        }
+
+        void IDisposable.Dispose()
+        {
+            VSColorTheme.ThemeChanged -= VSColorTheme_ThemeChanged;
         }
 
     }

@@ -138,11 +138,15 @@ namespace SqlTools.Completions
             // See whether we are in the key or value portion of the pair
             var lineStart = triggerLocation.GetContainingLine().Start;
             var lineEnd = triggerLocation.GetContainingLine().End;
+
             var spanBeforeCaret = new SnapshotSpan(lineStart, triggerLocation);
             var textBeforeCaret = triggerLocation.Snapshot.GetText(spanBeforeCaret);
 
             var spanCurrentCaret = new SnapshotSpan(lineStart, lineEnd);
-            var textCurrentCaret = triggerLocation.Snapshot.GetText(spanCurrentCaret).ToLower();
+            var textCurrentLine = triggerLocation.Snapshot.GetText(spanCurrentCaret).ToLower();
+
+            var spanAfterCaret = new SnapshotSpan(triggerLocation, lineEnd);
+            var textAfterCaret = triggerLocation.Snapshot.GetText(spanAfterCaret);
             //var colonIndex = textBeforeCaret.IndexOf(':');
             //var colonExistsBeforeCaret = colonIndex != -1;
 
@@ -159,11 +163,12 @@ namespace SqlTools.Completions
 
             int index = -1;
             bool detected = false;
-            foreach (var detect in detects)
-            {
-                while (textCurrentCaret.Length > index + 1 && (index = textCurrentCaret.IndexOf(detect, index + 1)) > -1)
-                    detected = true;
-            }
+            if (textBeforeCaret.LastIndexOf('"') != -1 && textAfterCaret.IndexOf('"') != -1)
+                foreach (var detect in detects)
+                {
+                    while (textCurrentLine.Length > index + 1 && (index = textCurrentLine.IndexOf(detect, index + 1)) > -1)
+                        detected = true;
+                }
 
             if (textBeforeCaret.Length > 0 && detected)
             {

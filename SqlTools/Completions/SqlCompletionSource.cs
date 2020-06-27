@@ -205,9 +205,9 @@ namespace SqlTools.Completions
                 }
             }
             // We would like to allow user to type anything, so we create SuggestionItemOptions
-            var suggestionOptions = new SuggestionItemOptions("Type anything...", $"Please enter value for {key}");
+            //var suggestionOptions = new SuggestionItemOptions("Type anything...", $"Please enter value for {key}");
 
-            return new CompletionContext(itemsBasedOnKey, suggestionOptions);
+            return new CompletionContext(itemsBasedOnKey); //, suggestionOptions);
         }
 
         /// <summary>

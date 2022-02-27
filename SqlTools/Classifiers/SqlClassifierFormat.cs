@@ -88,4 +88,18 @@ namespace SqlTools.Classifiers
             this.ForegroundColor = new Color() { R = 116, G = 83, B = 31 };
         }
     }
+
+    [Export(typeof(EditorFormatDefinition))]
+    [ClassificationType(ClassificationTypeNames = "Sql-Workflow")]
+    [Name("Sql-Workflow")]
+    [UserVisible(true)]
+    [Order(Before = Priority.High, After = Priority.High)]
+    internal sealed class SqlWorkflowFormat : ClassificationFormatDefinition
+    {
+        public SqlWorkflowFormat()
+        {
+            this.DisplayName = "Sql-Workflow";
+            this.ForegroundColor = new Color() { R = 255, G = 69, B = 0 };
+        }
+    }
 }

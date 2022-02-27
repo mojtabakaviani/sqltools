@@ -30,6 +30,9 @@ namespace SqlTools.Classifiers
         [Export(typeof(ClassificationTypeDefinition))]
         [Name("Sql-Defined")]
         internal static ClassificationTypeDefinition DefinedDefinition;
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name("Sql-Workflow")]
+        internal static ClassificationTypeDefinition WorkflowDefinition;
 #pragma warning restore 169
     }
 }

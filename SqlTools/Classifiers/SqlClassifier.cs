@@ -23,7 +23,7 @@ namespace SqlTools.Classifiers
 
         private readonly List<string> detects = new List<string>
         {
-            "select", "insert", "delete", "update", "create", "alter", "drop", "exec", "execute", "from", "join", "where"
+            "select", "insert", "delete", "update", "merge", "create", "alter", "drop", "exec", "execute", "from", "join", "where"
         };
 
         private readonly List<string> keywords = new List<string> {
@@ -44,7 +44,7 @@ namespace SqlTools.Classifiers
             "bigint", "numeric", "bit", "smallint", "decimal", "smallmoney", "int", "tinyint", "money", "float", "real",
             "date", "datetimeoffset", "datetime2", "smalldatetime", "datetime", "time", "timestamp",
             "char", "varchar", "text", "nchar", "nvarchar", "ntext", "grant", "deny",
-            "binary", "varbinary", "image",
+            "binary", "varbinary", "image", "using",
             "cursor", "hierarchyid", "uniqueidentifier", "sql_variant", "xml",
             "pivot", "unpivot"
         };
@@ -83,6 +83,7 @@ namespace SqlTools.Classifiers
         private readonly IClassificationType variableType;
         private readonly IClassificationType literalType;
         private readonly IClassificationType definedType;
+        private readonly IClassificationType workflowType;
         readonly ITagAggregator<NaturalTextTag> tagger;
         readonly IClassificationFormatMapService service;
 
@@ -96,6 +97,7 @@ namespace SqlTools.Classifiers
             variableType = registry.GetClassificationType("Sql-Variable");
             literalType = registry.GetClassificationType("Sql-Literal");
             definedType = registry.GetClassificationType("Sql-Defined");
+            workflowType = registry.GetClassificationType("Sql-Workflow");
 
             VSColorTheme.ThemeChanged += VSColorTheme_ThemeChanged;
 

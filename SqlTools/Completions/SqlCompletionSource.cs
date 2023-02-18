@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Text.Operations;
 using System;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace SqlTools.Completions
         private ITextStructureNavigatorSelectorService StructureNavigatorSelector { get; }
         //https://github.com/microsoft/VSSDK-Extensibility-Samples
         //http://glyphlist.azurewebsites.net/knownmonikers/
-        //https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.imaging.knownimageids.operator?view=visualstudiosdk-2019
+        //https://docs.microsoft.com/en-us/dotnet/api/microsoft.visualstudio.imaging.knownimageids.operator?view=visualstudiosdk-2022
         // ImageElements may be shared by CompletionFilters and CompletionItems. The automationName parameter should be localized.
         private static ImageElement KeywordIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1589), "Keyword");
         private static ImageElement FunctionIcon = new ImageElement(new ImageId(new Guid("ae27a6b0-e345-4288-96df-5eaf394ee369"), 1913), "Function");
@@ -147,44 +148,44 @@ namespace SqlTools.Completions
 
             var spanAfterCaret = new SnapshotSpan(triggerLocation, lineEnd);
             var textAfterCaret = triggerLocation.Snapshot.GetText(spanAfterCaret);
-            //var colonIndex = textBeforeCaret.IndexOf(':');
-            //var colonExistsBeforeCaret = colonIndex != -1;
+            var colonIndex = textBeforeCaret.IndexOf(':');
+            var colonExistsBeforeCaret = colonIndex != -1;
 
             // User is likely in the key portion of the pair
-            //if (!colonExistsBeforeCaret)
-            //    return GetContextForKey();
+            if (!colonExistsBeforeCaret)
+                return Task.FromResult(GetContextForKey());
 
             // User is likely in the value portion of the pair. Try to provide extra items based on the key.
-            //var KeyExtractingRegex = new Regex(@"^""[\W*|\s*](\w+)[\W*|\s*]$");
-            //var key = KeyExtractingRegex.Match(textBeforeCaret);
-            //var candidateName = key.Success ? key.Groups.Count > 0 && key.Groups[1].Success ? key.Groups[1].Value : string.Empty : string.Empty;
-
+            var KeyExtractingRegex = new Regex(@"^""[\W*|\s*](\w+)[\W*|\s*]$");
+            var key = KeyExtractingRegex.Match(textBeforeCaret);
+            var candidateName = key.Success ? key.Groups.Count > 0 && key.Groups[1].Success ? key.Groups[1].Value : string.Empty : string.Empty;
+            return Task.FromResult(GetContextForValue(candidateName));
             //var literals = Regex.Match(triggerLocation.Snapshot.GetText(), @"""(.*?)""", RegexOptions.Singleline);
 
-            int index = -1;
-            bool detected = false;
-            if (textBeforeCaret.LastIndexOf('"') != -1 && textAfterCaret.IndexOf('"') != -1)
-                foreach (var detect in detects)
-                {
-                    while (textCurrentLine.Length > index + 1 && (index = textCurrentLine.IndexOf(detect, index + 1)) > -1)
-                        detected = true;
-                }
+            //int index = -1;
+            //bool detected = false;
+            //if (textBeforeCaret.LastIndexOf('"') != -1 && textAfterCaret.IndexOf('"') != -1)
+            //    foreach (var detect in detects)
+            //    {
+            //        while (textCurrentLine.Length > index + 1 && (index = textCurrentLine.IndexOf(detect, index + 1)) > -1)
+            //            detected = true;
+            //    }
 
-            if (textBeforeCaret.Length > 0 && detected)
-            {
-                index = -1;
-                for (int i = textBeforeCaret.Length - 1; i > 0; i--)
-                {
-                    if (textBeforeCaret[i] == ' ' || textBeforeCaret[i] == '(' || textBeforeCaret[i] == '.' || textBeforeCaret[i] == '"')
-                    {
-                        index = i;
-                        break;
-                    }
-                }
-                if (index != -1)
-                    return Task.FromResult(GetContextForValue(textBeforeCaret.Substring(index + 1)));
-            }
-            return Task.FromResult(GetContextForValue(""));
+            //if (textBeforeCaret.Length > 0 && detected)
+            //{
+            //    index = -1;
+            //    for (int i = textBeforeCaret.Length - 1; i > 0; i--)
+            //    {
+            //        if (textBeforeCaret[i] == ' ' || textBeforeCaret[i] == '(' || textBeforeCaret[i] == '.' || textBeforeCaret[i] == '"')
+            //        {
+            //            index = i;
+            //            break;
+            //        }
+            //    }
+            //    if (index != -1)
+            //        return Task.FromResult(GetContextForValue(textBeforeCaret.Substring(index + 1)));
+            //}
+            //return Task.FromResult(GetContextForValue(""));
         }
 
         /// <summary>
@@ -257,8 +258,8 @@ namespace SqlTools.Completions
                 filters: filters,
                 suffix: keyword.Category.ToString(), //keyword.Symbol
                 insertText: keyword.Name.ToUpper(),
-                sortText: $"keyword {keyword.Category.ToString()}",
-                filterText: $"{keyword.Name} {keyword.Category.ToString()}",
+                sortText: $"keyword {keyword.Category}",
+                filterText: $"{keyword.Name} {keyword.Category}",
                 attributeIcons: ImmutableArray<ImageElement>.Empty);
 
             // Each completion item we build has a reference to the element in the property bag.

@@ -29,6 +29,7 @@ namespace SqlTools.Completions
             new Keyword("dump",Category.Keyword),
             new Keyword("from",Category.Keyword),
             new Keyword("where",Category.Keyword),
+            new Keyword("marge",Category.Keyword),
             new Keyword("group",Category.Keyword),
             new Keyword("order",Category.Keyword),
             new Keyword("by",Category.Keyword),
@@ -86,6 +87,7 @@ namespace SqlTools.Completions
             new Keyword("collate",Category.Keyword),
             new Keyword("coalesce",Category.Keyword),
             new Keyword("coalesce",Category.Keyword),
+            new Keyword("using",Category.Keyword),
             //operators
             new Keyword("like",Category.Operator),
             new Keyword("between",Category.Operator),
@@ -271,7 +273,8 @@ namespace SqlTools.Completions
             Function,
             Operator,
             Variable,
-            DataType
+            DataType,
+            Workflow
         }
 
         public class Keyword
